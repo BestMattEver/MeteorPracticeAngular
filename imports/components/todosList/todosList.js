@@ -8,13 +8,27 @@ class TodosListCtrl {
   constructor($scope) {
     $scope.viewModel(this);
 
+    this.hideCompleted =false;
+
     this.helpers({
       tasks(){
+        const selector = {};
+
+        //if hidecompleted is checked, filter out the checked tasks.
+        if(this.getReactively('hideCompleted'))
+        {
+          selector.checked = {$ne: true};
+        }
         //this line returns the task list in reverse order (most recent on top)
-        return Tasks.find({}, {sort: {createdAt: -1} });
+        return Tasks.find(selector, {sort: {createdAt: -1} });
       }//end tasks()
     })//end this.helpers
   }//end constructor
+
+  //this function counts incomplete tasks.
+  incompleteCount(){
+    return Tasks.find({ checked: {$ne: true} }).count();
+  }
 
 //this function inserts a new task into the collection Tasks.
   addTask(newTask){
