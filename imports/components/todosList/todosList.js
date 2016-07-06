@@ -21,20 +21,44 @@ class TodosListCtrl {
         }
         //this line returns the task list in reverse order (most recent on top)
         return Tasks.find(selector, {sort: {createdAt: -1} });
-      }//end tasks()
+      },//end tasks()
+
+      //this function counts incomplete tasks.
+      incompleteCount(){
+        return Tasks.find({ checked: {$ne: true} }).count();
+      },
+
+      currentUser() {
+        return Meteor.user();
+      }
+
     })//end this.helpers
   }//end constructor
 
-  //this function counts incomplete tasks.
-  incompleteCount(){
-    return Tasks.find({ checked: {$ne: true} }).count();
-  }
+
+
+
+
+
 
 //this function inserts a new task into the collection Tasks.
   addTask(newTask){
+
+    // var name;
+    // if(Meteor.user().username != null)
+    // {
+    //   name = Meteor.user().username;
+    // }
+    // else
+    // {
+    //   name = Meteor.user
+    // }
+
     Tasks.insert({
       text: newTask,
-      createdAt: new Date()
+      createdAt: new Date,
+      owner: Meteor.userId(),
+      username: Meteor.user().username
     });
 
     //clear the form.
